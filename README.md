@@ -34,16 +34,16 @@ Found :  192.168.1.64
 
 ## Roadmap
 
-1. make a port scanner
-2. add an option ip ranges more than subnets
-3. add an option to set the number of threads
-4. add an option of file output
-5. add an option of input file
-6. add dns resolution for port scanner
-7. add an option to set the ports to scan
-8. improve the help menu
-9. add an option to set the timeout
-10. add an option to set the number of retries
+1. add an option ip ranges/list more than subnets
+2. add an option to set the number of threads
+3. add an option of file output
+4. add an option of input file
+5. add an option to set the ports to scan (precise not range)
+6. add an option to set the timeout
+7. add an option to set the number of retries
+8. add an option to enable or disable the banner grabbing 
+9. check if ip is reachable before scanning
+10. improve banner grabbing to vary the message send based on the port scanned
 
 ## Authors
 
