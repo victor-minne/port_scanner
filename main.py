@@ -24,8 +24,8 @@ def print_help():
     
     
 def print_usage ():
-        print (color_print('w', "Missing arguments\nUsage: python3 port_scanner.py <mode> <-h> <-v> <IP/hostname></netmask or :port>\n"))
-        sys.exit(1)
+    print (color_print("w", "Missing arguments\nUsage: python3 port_scanner.py <mode> <-h> <-v> <IP/hostname></netmask or :port>\n"))
+    sys.exit(1)
     
     
 if __name__ == "__main__":
@@ -56,6 +56,10 @@ if __name__ == "__main__":
     ip = sys.argv[-1]
     
     scan = sc.Scan(ip, silent, banner_grabbing, type, max_port)
+    if type:
+        scan.ping_sweep_launcher()
+    else:
+        scan.port_scan_launcher()
     sys.exit(0)
 
 # see : https://gist.github.com/arnavdas88/dde5c8e3b436cc6db42792270034a94b

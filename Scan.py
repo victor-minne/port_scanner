@@ -16,10 +16,8 @@ class Scan ():
         
         if self.type:
             self.ip = ip
-            self.ping_sweep_launcher()
         else:
             self.ip = ip.split(":")[0]
-            self.port_scan_launcher()
 
         
     def color_print(self, type, message):
@@ -41,17 +39,15 @@ class Scan ():
             if ip_net.num_addresses < 254 :
                 print("Using " + str(ip_net.num_addresses) + " threads"+ "_"*50, "\n")
                 return concurrent.futures.ThreadPoolExecutor(ip_net.num_addresses)
-            else:
-                print("Using 254 thread to do so \n" +"_"*50, "\n")
-                return concurrent.futures.ThreadPoolExecutor(254)
-        else:
-            print("{}\nAddress to scan: {}\nThere are {} ports to scan".format("_"*50, self.ip, self.max_port))
-            if self.max_port < 254 :
-                print("Using " + str(self.max_port) + " threads"+ "_"*50, "\n")
-                return concurrent.futures.ThreadPoolExecutor(ip_net.num_addresses)
-            else:
-                print("Using 254 thread to do so \n" +"_"*50, "\n")
-                return concurrent.futures.ThreadPoolExecutor(254)
+            print("Using 254 thread to do so \n" +"_"*50, "\n")
+            return concurrent.futures.ThreadPoolExecutor(254)
+
+        print("{}\nAddress to scan: {}\nThere are {} ports to scan".format("_"*50, self.ip, self.max_port))
+        if self.max_port < 254 :
+            print("Using " + str(self.max_port) + " threads"+ "_"*50, "\n")
+            return concurrent.futures.ThreadPoolExecutor(ip_net.num_addresses)
+        print("Using 254 thread to do so \n" +"_"*50, "\n")
+        return concurrent.futures.ThreadPoolExecutor(254)
         
         
     def ping_sweep_launcher(self):
@@ -70,14 +66,11 @@ class Scan ():
         ping = [executor.submit(self.targets[ips].test_connection) for ips in self.targets]
         concurrent.futures.wait(ping)
         for target in self.targets:
-            if self.silent:
-                if self.targets[target].status:
-                    print( (str(self.targets[target].ip)) + self.color_print("g","\t[up]"))
-            else:
-                if self.targets[target].status:
-                    print( (str(self.targets[target].ip)) + self.color_print("g","\t[up]"))
-                else:
-                    print( (str(self.targets[target].ip)) + self.color_print("e","\t[down]"))
+            if self.targets[target].status:
+                print( (str(self.targets[target].ip)) + self.color_print("g","\t[up]"))
+                continue
+            if not self.silent:
+                print( (str(self.targets[target].ip)) + self.color_print("e","\t[down]"))
 
 
     def print_open_ports(self, ports_data, port):
@@ -101,13 +94,10 @@ class Scan ():
         ports_data = self.targets[self.ip].get_ports()
         
         for port in ports_data:
-            if self.silent == False : 
-                if ports_data[port]["state"]:
-                    self.print_open_ports(ports_data, port)
-            else:
-                if ports_data[port]["state"] :
-                    self.print_open_ports(ports_data, port)
-                else:
-                    print("Port {}".format(port) + self.color_print("e","\t\t[closed]"))
+            if ports_data[port]["state"]:
+                self.print_open_ports(ports_data, port)
+                continue
+            if not self.silent:
+                print("Port {}".format(port) + self.color_print("e","\t\t[closed]"))
         
         print(self.color_print("i","Scan complete, {} ports scanned".format(self.max_port)))
