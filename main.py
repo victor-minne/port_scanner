@@ -2,6 +2,7 @@
 
 import sys
 import Scan as sc
+import argparse
 
 def color_print(type, message):
     if type == 'w' :
@@ -12,55 +13,92 @@ def color_print(type, message):
         return("\033[92m" + message + "\033[0m")
     elif type == 'i' :
         return("\033[94m" + message + "\033[0m")
-
-
-def print_help():
-    print(color_print("w","Usage: python3 port_scanner.py <mode> <-h> <-v> <-b> <IP/hostname></netmask or :port>\n"))
-    print("Modes:\n--ping_sweep or -ps to permform a ping sweep\n--port_scan or -s to scan a single target\n--help -h for this menu\n-v for verbose mode\n -b for banner grabbing\n")
-    print("Example: python3 port_scanner.py --ping_sweep 192.168.100.0/24")
-    print("Example: python3 port_scanner.py --port_scan 192.168.100.5:100\n")
-    print(color_print("i","Note: \n>the last bit of the subnet need to be a zero\n>the port range need to be between 1 and 65535\n>the ip/hostname need to be the last argument\n"))
-    sys.exit(1)
-    
-    
-def print_usage ():
-    print (color_print("w", "Missing arguments\nUsage: python3 port_scanner.py <mode> <-h> <-v> <IP/hostname></netmask or :port>\n"))
-    sys.exit(1)
+    else:
+        raise ValueError("Invalid color type provided.")
     
     
 if __name__ == "__main__":
     # should manage only the argument parsing and call the right function
 
-    if "-h" in sys.argv or "--help" in sys.argv:
-        print_help()
+    parser = argparse.ArgumentParser(description='Port scanner')
+    parser.add_argument('--ping_sweep', '-ps', action='store_true', help='Perform a ping sweep')
+    parser.add_argument('--port_scan', '-s', action='store_true', help='Scan a single target')
+    parser.add_argument('--verbose', '-v', action='store_true', help='Verbose mode')
+    parser.add_argument('--banner_grabbing', '-b', action='store_true', help='Banner grabbing')
+    parser.add_argument('-ip', type=str, help='IP or hostname to scan')
+    parser.add_argument('--port_range', "-p", type=int, help='Max port to scan')
+    parser.add_argument('--net_mask', "-m", type=int, help='Subnet to scan')
+    
+    args = parser.parse_args()
+    
+    if args.ip == None:
+        print(color_print("e","Missing arguments : IP"))
+        parser.print_help()
+        sys.exit(1)
+    
+    if args.port_range == False and args.net_mask == False:
+        print(color_print("e","Missing arguments : port_range or net_mask"))
+        parser.print_help()
+        sys.exit(1)
+    
+    if args.port_range and args.net_mask:
+        print(color_print("e","You can't use both port_range and net_mask at the same time"))
+        parser.print_help()
+        sys.exit(1)
+    
+    if args.ping_sweep == False and args.port_scan == False:
+        print(color_print("e","You need to specify a mode (ping_sweep or port_scan)"))
+        parser.print_help()
+        sys.exit(1)
         
-    if len(sys.argv) < 3 :
-        print_usage()
+    if args.ping_sweep and args.port_scan:
+        print(color_print("e","You can't use both ping_sweep and port_scan at the same time"))
+        parser.print_help()
+        sys.exit(1)
     
-    # false means no verbose (silent mode)
-    silent = True if "-v" in sys.argv else False 
     
-    # True means ping_sweep, False means port_scan
-    type = True if "--ping_sweep" in sys.argv or "-ps" in sys.argv else None
-    type = False if "--port_scan" in sys.argv or "-s" in sys.argv else type
-    if type == None : print_help()
-    if type == False:
-        max_port = int(sys.argv[-1].split(":")[1])
-        if max_port > 65535 or max_port < 0:
-            print(color_print("e","Invalid port range. Please enter a valid port range."))
+    if args.ping_sweep :
+        # fais le ping_sweep
+        type = True
+        if args.net_mask == None:
+            print(color_print("e","You need to specify a net_mask"))
+            parser.print_help()
             sys.exit(1)
+        if 0 > parser.net_mask < 32:
+            print(color_print("e","Invalid net_mask. Please enter a valid net_mask."))
+            parser.print_help()
+            sys.exit(1)
+
     else:
-        max_port = 65535
+        # fais le port_scan
+        type = False
+        if args.port_range == None:
+            print(color_print("e","You need to specify a port_range"))
+            parser.print_help()
+            sys.exit(1)
+        if -1 > args.port_range > 65536:
+            print(color_print("e","Invalid port range. Please enter a valid port range. (1-65535)"))
+            parser.print_help()
+            sys.exit(1)
+                
+        banner_grabbing = False if args.banner_grabbing == None else True
         
-    banner_grabbing = True if "-b" in sys.argv else False
-    ip = sys.argv[-1]
+
+
+
     
-    scan = sc.Scan(ip, silent, banner_grabbing, type, max_port)
+    scan = sc.Scan(args.ip, args.verbose, banner_grabbing, type, args.port_range, args.net_mask)
     if type:
         scan.ping_sweep_launcher()
     else:
         scan.port_scan_launcher()
     sys.exit(0)
+
+
+
+
+
+
 
 # see : https://gist.github.com/arnavdas88/dde5c8e3b436cc6db42792270034a94b
 # 2. add an option ip ranges/list more than subnets
@@ -77,5 +115,3 @@ if __name__ == "__main__":
 # 19. add an option to list the users in the ftp server
 # 20. add the same as FTP for SMB
 # 21. add an option to automatically connect to a ssh server with a dictionnary, or anonymously
-# 22. improve the arguments management, and the help menu
-# 23. Done

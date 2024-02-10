@@ -39,18 +39,6 @@ class Target ():
     
     def set_users(self, user):
         self.users.append(user)
-   
-    def color_print(self, type, message):
-        if type == 'w':
-            return("\033[93m" + message + "\033[0m")
-        elif type == 'e':
-            return("\033[91m" + message + "\033[0m")
-        elif type == 'g':
-            return("\033[92m" + message + "\033[0m")
-        elif type == 'i':
-            return("\033[94m" + message + "\033[0m")
-        else:
-            raise ValueError("Invalid color type provided.")
     
     def test_connection (self):
         if not ipaddress.ip_address(self.ip).is_global:
