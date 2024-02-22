@@ -1,14 +1,16 @@
 
 # Port scanner
 
-This project made in python3.10 and is made to exercice my programming skill while learning how cybersecurity tool work.
+This project made in python3.10 and is made to exercice my programming skill while learning how cybersecurity tool work. It aims to make a Nmap, rustscan... like written in python. All of this while learning common techniques and automate them, wether they are information gathering or attacks.
+Please do not use this without written autorization from the owner of the target system. This is not meant to be used in real case scenarios.
+
 ## Usage/Examples
 
 
 ```shell
 $ python3 main.py -h
-
-usage: main.py [-h] [--ping_sweep] [--port_scan] [--verbose] [--banner_grabbing] [-ip IP] [--port_range PORT_RANGE] [--net_mask NET_MASK]
+usage: main.py [-h] [--ping_sweep] [--port_scan] [--verbose] [--banner_grabbing] [-ip IP] [--port_range PORT_RANGE] [--net_mask NET_MASK] [--timeout TIMEOUT] [--threads THREADS]
+               [--pull PULL]
 
 Port scanner
 
@@ -24,6 +26,14 @@ options:
                         Max port to scan
   --net_mask NET_MASK, -m NET_MASK
                         Subnet to scan
+  --timeout TIMEOUT, -t TIMEOUT
+                        Timeout for the scan, the time is an INT in seconds
+  --threads THREADS, -th THREADS
+                        Number of threads to use, will be limited to the number of ports if you set more thread than ports
+  --pull PULL, -pl PULL
+                        Pull files from the FTP server, need to precise the path to where you want to place them
+
+
 ```
 
 ```shell
@@ -73,15 +83,15 @@ Scan complete, 1000 ports scanned
 ## Roadmap
 
 1. add an option ip ranges/list more than subnets
-2. add an option to set the number of threads
+2. add an option to set the number of threads (done)
 3. add an option of file output
 4. add an option of input file
 5. add an option to set the ports to scan (precise not range)
-6. add an option to set the timeout
+6. add an option to set the timeout (done)
 7. add an option to set the number of retries
-8. add an option to enable or disable the banner grabbing 
-9. Done  check if ip is reachable before scanning
-10. improve banner grabbing to vary the message send based on the port scanned
+8. add an option to enable or disable the banner grabbing  (done)
+9. check if ip is reachable before scanning (done)
+10. improve banner grabbing to vary the message send based on the port scanned (on going)
 
 ## Authors
 
