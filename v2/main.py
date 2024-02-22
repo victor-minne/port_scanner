@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from sys import exit
-from Scan import Scan as sc
+import Scan as sc
 from argparse import ArgumentParser
 from os import path
 
