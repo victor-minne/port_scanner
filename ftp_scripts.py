@@ -1,6 +1,4 @@
-import socket
-import ftplib
-
+from ftplib import FTP
 
 def ftp_connect(ip, port, pull=False):
     """
@@ -13,15 +11,17 @@ def ftp_connect(ip, port, pull=False):
     Returns:
     - socket: The socket object.
     """
-    ftp = ftplib.FTP(ip)
+    ftp = FTP(ip)
     try : 
         ftp.connect(ip, port)
     except ConnectionError:
+        ftp.quit()
         raise ConnectionError("enable to connect to the FTP server")
     
     banner = ftp.getwelcome()
     anon_login = anonymous_ftp_login(ftp, pull)
     
+    ftp.quit()
     return banner, anon_login 
 
 
@@ -43,6 +43,7 @@ def anonymous_ftp_login(ftp, pull):
             if pull:
                 pull_files(ftp, pull)
         except ConnectionError:
+            ftp.quit()
             raise ConnectionError("not able to list the directory")
         return result
     return "not able to login as anonymous" + result + "\n" + dir_list
@@ -56,11 +57,17 @@ def pull_files(ftp, pull):
     Parameters:
     - s: The socket object.
     """
-    
-    files = ftp.nlst()
-    for file in files:
-        file_path = pull + file
-        with open(file_path, 'wb') as f:
-            ftp.retrbinary('RETR ' + file, f.write)
-    ftp.quit()
+    try :
+        files = ftp.nlst()
+        for file in files:
+            file_path = pull + file
+            try : 
+                with open(file_path, 'wb') as f:
+                    ftp.retrbinary('RETR ' + file, f.write)
+            except FileNotFoundError:
+                ftp.quit()
+                raise FileNotFoundError("not able to create the file, or retreive it from the FTP server")
+    except ConnectionError:
+        ftp.quit()
+        raise ConnectionError("not able to pull the files")
     return "Files pulled successfully"
