@@ -137,7 +137,6 @@ if __name__ == "__main__":
 # 4. add an option of file output
 # 5. add an option of input file
 # 10. add an option to set the number of retries
-# 16. for 80 and 443, add an option to get robots.txt and sitemap.xml   // need to add it in an appart module
 # 17. add an option to fuzz the webserver                               // need to add it in an appart module
 # 19. add an option to list the users in the ftp server                 // need to add it in an appart module
 # 20. add the same as FTP for SMB
