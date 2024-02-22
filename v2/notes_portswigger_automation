@@ -2,14 +2,7 @@ idea of automation
 
 ## Web :
 
-get the robots.txt content of a website
-check the presence of the sitemap.xml file and get its content
 check common security headers
 check the presence of a login page
 check the presence of a contact page
 automate getting emails from a website
-
-
-## ftp
-
-getting automatically files

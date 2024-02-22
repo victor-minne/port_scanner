@@ -192,7 +192,7 @@ class Target ():
         - port (int): The port number.
         """
         try:
-            if port == 80:
+            if port == 80 or port == 443:
                 s.sendall(b"HEAD / HTTP/1.1\r\n\r\n")
                 banner = s.recv(1024)
                 
