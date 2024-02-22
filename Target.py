@@ -1,5 +1,5 @@
 import concurrent
-import ipaddress
+import ipaddress 
 import socket
 import subprocess
 
@@ -198,7 +198,7 @@ class Target ():
                 
                 self.ports[port]["banner"] = banner.decode()
             elif port == 21:
-                import ftp_scripts
+                import port_scanner.v2.scripts.ftp_scripts as ftp_scripts
                 self.ports[port]["banner"] = ftp_scripts.ftp_connect(self.ip, port, self.pull)
             else :                 
                 banner = s.recv(1024)

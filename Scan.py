@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
 from datetime import datetime
-import ipaddress
-import concurrent.futures
+from ipaddress import ip_network
 from sys import exit as sys_exit
-import Target as tg
 from main import color_print
+import Target as tg
+import concurrent.futures
 
 class Scan ():
     
@@ -84,7 +84,7 @@ class Scan ():
             int: 1 if an invalid subnet is provided, otherwise None.
         """
         try:
-            ip_net = ipaddress.ip_network(self.ip)
+            ip_net = ip_network(self.ip)
         except ValueError:
             print(color_print("e","Invalid subnet. Please enter a valid subnet. the last bit need to be a zero"))
             return 1
@@ -137,7 +137,7 @@ class Scan ():
             None
         """
         try : 
-            ip_net = ipaddress.ip_network(self.ip)
+            ip_net = ip_network(self.ip)
         except Exception: 
             print(color_print("e","Invalid IP address. Please enter a valid IP address."))
             sys_exit.exit(1)
