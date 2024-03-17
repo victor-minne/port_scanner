@@ -73,7 +73,6 @@ class Target ():
         try:
             self.hostname = socket.gethostbyaddr(self.ip)[0]
         except Exception:
-            print("No hostname available")
             self.hostname = ""
     
     def get_status(self):
@@ -139,10 +138,12 @@ class Target ():
 
         If the target is reachable, sets the status to True. Otherwise, sets the status to False.
         """
+
         if not ipaddress.ip_address(self.ip).is_global:
+            
             try:
                 target = socket.gethostbyname(str(self.ip))
-                subprocess.check_output(["ping", "-c", self.timeout, target])
+                subprocess.check_output(["ping", "-c", str(self.timeout), str(target)])
                 self.set_status(True)
 
             except Exception :

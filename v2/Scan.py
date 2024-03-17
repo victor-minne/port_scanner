@@ -9,7 +9,7 @@ import concurrent.futures
 
 class Scan ():
     
-    def __init__(self, ip, silent, banner_mode, type, max_port=65535, net_mask=32, timeout=1, threads=254, pull=False):
+    def __init__(self, ip, silent, banner_mode, type, max_port=65535, net_mask=32, timeout=1, threads=254, pull=False, script=False):
         """
         Initialize the Scan object.
 
@@ -38,6 +38,7 @@ class Scan ():
             self.ip = ip + "/" + str(self.net_mask)
         else:
             self.ip = ip
+        self.script = script
 
         
     # to improve we exec really similar code in both if + function is doing too much (print + set up the thread pool executor) should be done in 2 different functions)
@@ -95,6 +96,7 @@ class Scan ():
         for ips in ip_net.hosts():
             self.targets[ips] = tg.Target(ips, self.timeout)
 
+        # problem comes from the next line
         ping = [executor.submit(self.targets[ips].test_connection) for ips in self.targets]
         concurrent.futures.wait(ping)
         for target in self.targets:
@@ -131,7 +133,7 @@ class Scan ():
         2. Call the prints starting message function.
         3. Create a target object for the specified IP address.
         4. Retrieves the ports data.
-        5. Prints the retrieved data
+        5. Prints the retrieved data        # need to check that after
 
         Returns:
             None

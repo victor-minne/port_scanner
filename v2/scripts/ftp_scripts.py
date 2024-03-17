@@ -112,7 +112,9 @@ async def ftp_brute_launch(ip, username, wordlist, port=21):
     if not found_flag.is_set():
         print(colored("\n [-] Failed to find the correct password.", "red"))
         
+# to finish no input of wordlit made 
 def launch_ftp_bruteforce(ip, username, wordlist, port=21):
     # need to check for the wordlist file, need to enable list for the ftp server
     asyncio.run(ftp_brute_launch(ip, port, username, wordlist))
+    
     
